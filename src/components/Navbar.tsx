@@ -8,22 +8,33 @@ import iconSetup from "../assets/PNG 7.png";
 import iconAnalytics from "../assets/PNG 6.png";
 import iconMembers from "../assets/PNG 10.png";
 
-interface NavItem {
+export interface NavItem {
   label: string;
   href: string;
-  iconSrc: string;
+  iconSrc?: string;
+  iconClass?: string;
 }
 
-const navItems: NavItem[] = [
+interface NavbarProps {
+  title?: string;
+  mobileTitle?: string;
+  items?: NavItem[];
+}
+
+const defaultNavItems: NavItem[] = [
   { label: "Home", href: "#home", iconSrc: iconHome },
   { label: "Features", href: "#features", iconSrc: iconFeatures },
   { label: "Commands", href: "#commands", iconSrc: iconCommands },
   { label: "Setup", href: "#setup", iconSrc: iconSetup },
-  { label: "Analytics", href: "dashboard.html", iconSrc: iconAnalytics },
-  { label: "Members", href: "profile.html", iconSrc: iconMembers },
+  { label: "Analytics", href: "/dashboard", iconSrc: iconAnalytics },
+  { label: "Members", href: "/profile", iconSrc: iconMembers },
 ];
 
-const Navbar: React.FC = () => {
+const Navbar: React.FC<NavbarProps> = ({
+  title = "Blossoming Sekai's Miku",
+  mobileTitle = "Sekai",
+  items = defaultNavItems,
+}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [activeSection, setActiveSection] = useState<string>("");
 
@@ -68,12 +79,11 @@ const Navbar: React.FC = () => {
             className="w-8.75 h-8.75 md:w-12 md:h-12 object-contain drop-shadow-[0_0_12px_var(--glow-color)]"
             onError={(e) => (e.currentTarget.style.display = "none")}
           />
-          <span className="text-[1.3rem] md:text-[1.5rem] font-extrabold tracking-[-0.5px] bg-[linear-gradient(135deg,var(--miku-primary),var(--miku-accent))] bg-clip-text text-transparent [-webkit-text-fill-color:transparent] drop-shadow-[0_0_8px_var(--glow-color)]">
-            <span className="md:hidden">Sekai</span>
-            <span className="hidden md:inline">Blossoming Sekai's Miku</span>
+          <span className="text-[1.3rem] md:text-[1.5rem] font-extrabold tracking-[-0.5px] bg-[linear-gradient(135deg,var(--miku-primary),var(--miku-accent))] bg-clip-text text-transparent [-webkit-text-fill-color:transparent] drop-shadow-[0_0_8px_var(--glow-color)] whitespace-nowrap">
+            <span className="md:hidden">{mobileTitle}</span>
+            <span className="hidden md:inline">{title}</span>
           </span>
         </div>
-
         <div
           className="flex flex-col gap-1.25 md:hidden cursor-pointer z-1001"
           onClick={() => setIsOpen(!isOpen)}
@@ -100,7 +110,7 @@ const Navbar: React.FC = () => {
           ${isOpen ? "translate-y-0 opacity-100 visible" : "-translate-y-[150%] md:translate-y-0 opacity-0 invisible md:opacity-100 md:visible"}
         `}
         >
-          {navItems.map((item) => {
+          {items.map((item) => {
             const isActive = item.href === `#${activeSection}`;
 
             return (
@@ -114,15 +124,19 @@ const Navbar: React.FC = () => {
                     ${isActive ? "text-(--miku-primary)" : "text-(--text-muted) hover:text-(--miku-primary)"}
                   `}
                 >
-                  <img
-                    src={item.iconSrc}
-                    alt=""
-                    loading="lazy"
-                    className={`
-                      w-5 h-5 md:w-6 md:h-6 object-contain transition-transform duration-300
-                      ${isActive ? "opacity-100 scale-110 -rotate-[5deg]" : "opacity-80 group-hover:opacity-100 group-hover:scale-110 group-hover:-rotate-[5deg]"}
-                    `}
-                  />
+                  {item.iconSrc ? (
+                    <img
+                      src={item.iconSrc}
+                      alt=""
+                      loading="lazy"
+                      className={`w-5 h-5 md:w-6 md:h-6 object-contain transition-transform duration-300 ${isActive ? "opacity-100 scale-110 -rotate-[5deg]" : "opacity-80 group-hover:opacity-100 group-hover:scale-110 group-hover:-rotate-[5deg]"}`}
+                    />
+                  ) : (
+                    <i
+                      className={`${item.iconClass} text-[1.2rem] transition-transform duration-300 opacity-80 group-hover:opacity-100 group-hover:scale-110 group-hover:-rotate-[5deg]`}
+                    ></i>
+                  )}
+
                   <span>{item.label}</span>
 
                   <span
