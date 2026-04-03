@@ -216,7 +216,9 @@ const Profile = () => {
       const a = document.createElement("a");
       a.href = url;
       a.download = `sekai-card-${currentUser.username}.png`;
+      document.body.appendChild(a);
       a.click();
+      document.body.removeChild(a);
       URL.revokeObjectURL(url);
       setStatusMsg("Download started!");
     } catch (error) {
