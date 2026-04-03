@@ -165,6 +165,22 @@ const Profile = () => {
     const targetWidth = 450;
     await new Promise((resolve) => setTimeout(resolve, 500));
     await document.fonts.ready;
+
+    const images = cardRef.current.querySelectorAll("img");
+    const imagePromises = Array.from(images).map(
+      (img) =>
+        new Promise<void>((resolve, reject) => {
+          if (img.complete) {
+            resolve();
+          } else {
+            img.onload = () => resolve();
+            img.onerror = () =>
+              reject(new Error(`Failed to load image: ${img.src}`));
+          }
+        }),
+    );
+    await Promise.all(imagePromises);
+
     try {
       const blob = await toBlob(cardRef.current, {
         backgroundColor: "#1e1e2e",

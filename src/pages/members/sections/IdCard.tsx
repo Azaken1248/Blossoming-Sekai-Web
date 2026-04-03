@@ -1,4 +1,5 @@
 import React from "react";
+import decorImage from "../../../assets/PNG 2.png";
 
 const Badge = ({
   children,
@@ -128,7 +129,7 @@ const IdCard: React.FC<IdCardProps> = ({
                   </div>
                 </div>
                 <img
-                  src="/src/assets/PNG 2.png"
+                  src={decorImage}
                   alt="Decor"
                   className="absolute w-10 sm:w-15 opacity-80 -top-1 sm:-top-2.5 -right-1 sm:right-0 drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)]"
                 />
