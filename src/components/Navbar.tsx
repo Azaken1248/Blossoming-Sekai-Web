@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 import logoImg from "../assets/PNG 1.png";
 import iconHome from "../assets/PNG 1.png";
@@ -22,11 +23,11 @@ interface NavbarProps {
 }
 
 const defaultNavItems: NavItem[] = [
-  { label: "Home", href: "#home", iconSrc: iconHome },
+  { label: "Home", href: "/", iconSrc: iconHome },
   { label: "Features", href: "#features", iconSrc: iconFeatures },
   { label: "Commands", href: "#commands", iconSrc: iconCommands },
   { label: "Setup", href: "#setup", iconSrc: iconSetup },
-  { label: "Analytics", href: "/dashboard", iconSrc: iconAnalytics },
+  { label: "Analytics", href: "/analytics", iconSrc: iconAnalytics },
   { label: "Members", href: "/profile", iconSrc: iconMembers },
 ];
 
@@ -37,6 +38,7 @@ const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [activeSection, setActiveSection] = useState<string>("");
+  const location = useLocation();
 
   useEffect(() => {
     const sections = document.querySelectorAll("section[id]");
@@ -67,6 +69,12 @@ const Navbar: React.FC<NavbarProps> = ({
       }
     }
     setIsOpen(false);
+  };
+
+  const isCurrentPage = (href: string): boolean => {
+    if (href === "/") return location.pathname === "/";
+    if (href === "/analytics") return location.pathname === "/analytics";
+    return href === `#${activeSection}`;
   };
 
   return (
@@ -111,41 +119,60 @@ const Navbar: React.FC<NavbarProps> = ({
         `}
         >
           {items.map((item) => {
-            const isActive = item.href === `#${activeSection}`;
+            const isActive = isCurrentPage(item.href);
+            const isAbsolutePath = !item.href.startsWith("#");
 
-            return (
-              <li key={item.label}>
-                <a
-                  href={item.href}
-                  onClick={(e) => handleNavClick(e, item.href)}
+            const linkContent = (
+              <>
+                {item.iconSrc ? (
+                  <img
+                    src={item.iconSrc}
+                    alt=""
+                    loading="lazy"
+                    className={`w-5 h-5 md:w-6 md:h-6 object-contain transition-transform duration-300 ${isActive ? "opacity-100 scale-110 -rotate-[5deg]" : "opacity-80 group-hover:opacity-100 group-hover:scale-110 group-hover:-rotate-[5deg]"}`}
+                  />
+                ) : (
+                  <i
+                    className={`${item.iconClass} text-[1.2rem] transition-transform duration-300 opacity-80 group-hover:opacity-100 group-hover:scale-110 group-hover:-rotate-[5deg]`}
+                  ></i>
+                )}
+
+                <span>{item.label}</span>
+
+                <span
                   className={`
-                    group relative flex items-center gap-2 p-2 md:p-0 md:py-2 
-                    text-[1.1rem] md:text-[0.95rem] font-semibold transition-all duration-300 no-underline
-                    ${isActive ? "text-(--miku-primary)" : "text-(--text-muted) hover:text-(--miku-primary)"}
-                  `}
-                >
-                  {item.iconSrc ? (
-                    <img
-                      src={item.iconSrc}
-                      alt=""
-                      loading="lazy"
-                      className={`w-5 h-5 md:w-6 md:h-6 object-contain transition-transform duration-300 ${isActive ? "opacity-100 scale-110 -rotate-[5deg]" : "opacity-80 group-hover:opacity-100 group-hover:scale-110 group-hover:-rotate-[5deg]"}`}
-                    />
-                  ) : (
-                    <i
-                      className={`${item.iconClass} text-[1.2rem] transition-transform duration-300 opacity-80 group-hover:opacity-100 group-hover:scale-110 group-hover:-rotate-[5deg]`}
-                    ></i>
-                  )}
-
-                  <span>{item.label}</span>
-
-                  <span
-                    className={`
                     absolute bottom-0 left-0 h-0.5 bg-(--miku-secondary) transition-[width] duration-300 rounded-xs
                     ${isActive ? "w-full" : "w-0 group-hover:w-full"}
                   `}
-                  ></span>
-                </a>
+                ></span>
+              </>
+            );
+
+            const linkClass = `
+                    group relative flex items-center gap-2 p-2 md:p-0 md:py-2 
+                    text-[1.1rem] md:text-[0.95rem] font-semibold transition-all duration-300 no-underline
+                    ${isActive ? "text-(--miku-primary)" : "text-(--text-muted) hover:text-(--miku-primary)"}
+                  `;
+
+            return (
+              <li key={item.label}>
+                {isAbsolutePath ? (
+                  <Link
+                    to={item.href}
+                    className={linkClass}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {linkContent}
+                  </Link>
+                ) : (
+                  <a
+                    href={item.href}
+                    onClick={(e) => handleNavClick(e, item.href)}
+                    className={linkClass}
+                  >
+                    {linkContent}
+                  </a>
+                )}
               </li>
             );
           })}
