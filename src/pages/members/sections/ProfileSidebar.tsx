@@ -72,11 +72,24 @@ const ProfileSidebar: React.FC<ProfileSidebarProps> = ({
                       onClick={() => onUserSelect(u)}
                       className="w-full text-left px-4 py-2.5 hover:bg-(--ctp-surface1) border-b border-(--ctp-surface2) last:border-b-0 transition"
                     >
-                      <div className="font-semibold text-(--ctp-text) text-sm">
-                        {u.username || "Unknown"}
+                      <div className="flex items-center justify-between">
+                        <div className="font-semibold text-(--ctp-text) text-sm">
+                          {u.username || "Unknown"}
+                        </div>
+                        {u.isDeboarded && (
+                          <span className="text-[0.65rem] font-bold px-2 py-0.5 rounded-full bg-[rgba(148,226,213,0.15)] text-(--miku-primary) border border-[rgba(148,226,213,0.3)]">
+                            <i className="fa-solid fa-passport mr-1"></i>
+                            RECRUITED
+                          </span>
+                        )}
                       </div>
-                      <div className="text-xs text-(--ctp-subtext0)">
-                        {u.discordId}
+                      <div className="text-xs text-(--ctp-subtext0) flex flex-col gap-0.5">
+                        {u.isDeboarded && u.deboarded_statusMessage && (
+                          <span className="text-[0.7rem] italic">
+                            "{u.deboarded_statusMessage}"
+                          </span>
+                        )}
+                        <span>{u.discordId}</span>
                       </div>
                     </button>
                   ))

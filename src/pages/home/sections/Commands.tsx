@@ -7,72 +7,149 @@ interface Command {
   name: string;
   description: string;
   category: string;
+  permissions: string;
 }
 
 const commandsList: Command[] = [
+  // Crew Management
   {
-    name: "/assign",
-    description: "Assign tasks to team members",
-    category: "Task Management",
+    name: "/onboard, !onboard",
+    description: "Welcome new crew members",
+    category: "Crew Management",
+    permissions: "Owners only",
   },
   {
-    name: "/submit",
-    description: "Submit completed work",
-    category: "Task Management",
+    name: "/deboard, !deboard",
+    description: "Recruit a user to another sekai with farewell message",
+    category: "Crew Management",
+    permissions: "Owners only",
   },
   {
-    name: "/extension",
-    description: "Request deadline extension",
-    category: "Task Management",
+    name: "/removetask, !removetask",
+    description: "Delete pending/late tasks (protects completed tasks)",
+    category: "Crew Management",
+    permissions: "Managers/Owners",
   },
-  {
-    name: "/tasks",
-    description: "View active tasks",
-    category: "Task Management",
-  },
-  {
-    name: "/history",
-    description: "View task completion history",
-    category: "Task Management",
-  },
-  {
-    name: "/onboard",
-    description: "Add new team members",
-    category: "User Management",
-  },
-  {
-    name: "/profile",
-    description: "View user profiles",
-    category: "User Management",
-  },
-  {
-    name: "/strike",
-    description: "Manage accountability strikes",
-    category: "User Management",
-  },
+
+  // Strike Management
   {
     name: "/strike list",
-    description: "View list of active strikes",
-    category: "User Management",
+    description: "View all users with active strikes",
+    category: "Strike Management",
+    permissions: "Managers/Owners",
   },
   {
-    name: "/hiatus",
-    description: "Request or grant hiatus",
-    category: "Status Management",
+    name: "/strike add",
+    description: "Add strike to a user",
+    category: "Strike Management",
+    permissions: "Managers/Owners",
   },
   {
-    name: "/endhiatus",
-    description: "End hiatus period",
-    category: "Status Management",
+    name: "/strike remove",
+    description: "Remove strike from a user",
+    category: "Strike Management",
+    permissions: "Managers/Owners",
   },
-  { name: "/help", description: "View all commands", category: "Utility" },
+
+  // Task Management
   {
-    name: "/ping",
+    name: "/assign",
+    description: "Assign task type and role to a user",
+    category: "Task Management",
+    permissions: "Managers/Owners",
+  },
+  {
+    name: "/submit, !submit",
+    description: "Mark task as complete/ready for review",
+    category: "Task Management",
+    permissions: "Anyone",
+  },
+  {
+    name: "/extension, !extension",
+    description: "Request deadline extension for a task",
+    category: "Task Management",
+    permissions: "Anyone",
+  },
+  {
+    name: "/tasks, !tasks",
+    description: "View active tasks (yours or another user's)",
+    category: "Task Management",
+    permissions: "Anyone",
+  },
+
+  // Analytics & Profile
+  {
+    name: "/profile, !profile",
+    description: "View user profile and task statistics",
+    category: "Analytics & Profile",
+    permissions: "Anyone",
+  },
+  {
+    name: "/card, !card",
+    description: "View user ID card with roles and stats",
+    category: "Analytics & Profile",
+    permissions: "Anyone",
+  },
+  {
+    name: "/history, !history",
+    description: "Search and view task history with filters",
+    category: "Analytics & Profile",
+    permissions: "Anyone",
+  },
+  {
+    name: "/checkfree, !checkfree",
+    description: "Check who has no active tasks",
+    category: "Analytics & Profile",
+    permissions: "Anyone",
+  },
+
+  // Hiatus Management
+  {
+    name: "/hiatus, !hiatus",
+    description: "Request or grant hiatus (needs approval)",
+    category: "Hiatus Management",
+    permissions: "Anyone",
+  },
+  {
+    name: "/endhiatus, !endhiatus",
+    description: "End hiatus period (yours or another user's)",
+    category: "Hiatus Management",
+    permissions: "Anyone",
+  },
+
+  // Utility
+  {
+    name: "/help, !help",
+    description: "Show all available commands",
+    category: "Utility",
+    permissions: "Anyone",
+  },
+  {
+    name: "/ping, !ping",
     description: "Check bot response time",
     category: "Utility",
+    permissions: "Anyone",
   },
-  { name: "/uptime", description: "Check bot uptime", category: "Utility" },
+  {
+    name: "/uptime, !uptime",
+    description: "Check bot uptime",
+    category: "Utility",
+    permissions: "Anyone",
+  },
 ];
+
+const getPermissionColor = (permission: string): string => {
+  switch (permission) {
+    case "Owners only":
+      return "bg-[rgba(203,166,247,0.15)] text-(--ctp-mauve) border-[rgba(203,166,247,0.3)]";
+    case "Managers/Owners":
+      return "bg-[rgba(249,226,175,0.15)] text-(--ctp-yellow) border-[rgba(249,226,175,0.3)]";
+    case "Anyone":
+      return "bg-[rgba(166,227,161,0.15)] text-(--ctp-green) border-[rgba(166,227,161,0.3)]";
+    default:
+      return "bg-(--ctp-surface1) text-(--ctp-text) border border-(--ctp-surface2)";
+  }
+};
 
 const Commands: React.FC = () => {
   return (
@@ -123,6 +200,9 @@ const Commands: React.FC = () => {
                 <th className="text-left p-[0.8rem_0.5rem] md:p-4 text-(--miku-secondary) font-bold uppercase tracking-[1px] border-b-2 border-(--ctp-surface1) text-[0.85rem] md:text-[0.9rem]">
                   Category
                 </th>
+                <th className="text-left p-[0.8rem_0.5rem] md:p-4 text-(--miku-secondary) font-bold uppercase tracking-[1px] border-b-2 border-(--ctp-surface1) text-[0.85rem] md:text-[0.9rem]">
+                  Permissions
+                </th>
               </tr>
             </thead>
 
@@ -143,6 +223,13 @@ const Commands: React.FC = () => {
                   <td className="p-[0.8rem_0.5rem] md:p-4 whitespace-normal">
                     <span className="inline-block px-[0.8rem] py-[0.3rem] rounded-[50px] text-[0.8rem] font-semibold bg-(--ctp-surface1) text-(--miku-accent) border border-(--ctp-surface2)">
                       {cmd.category}
+                    </span>
+                  </td>
+                  <td className="p-[0.8rem_0.5rem] md:p-4 whitespace-normal">
+                    <span
+                      className={`inline-block px-[0.8rem] py-[0.3rem] rounded-[50px] text-[0.8rem] font-semibold border ${getPermissionColor(cmd.permissions)}`}
+                    >
+                      {cmd.permissions}
                     </span>
                   </td>
                 </tr>
