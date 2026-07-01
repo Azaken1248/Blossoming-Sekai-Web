@@ -5,7 +5,7 @@ import Navbar from "../../components/Navbar";
 import ProfileSidebar from "../members/sections/ProfileSidebar";
 import IdCard from "../members/sections/IdCard";
 
-const API_BASE = "https://api.sekai.azaken.com";
+const API_BASE = "https://sekaiapi.azaken.com";
 const API_USERS = `${API_BASE}/api/users`;
 
 const Profile = () => {
