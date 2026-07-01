@@ -6,8 +6,8 @@ import { StatsGrid } from "./sections/StatsGrid";
 import { ChartAnalysis } from "./sections/ChartAnalysis";
 import { DataTable } from "./sections/DataTable";
 
-const API_BASE = "https://api.sekai.azaken.com/api/v1/analytics";
-const API_USERS_FALLBACK = "https://api.sekai.azaken.com/api/users";
+const API_BASE = "https://sekaiapi.azaken.com/api/v1/analytics";
+const API_USERS_FALLBACK = "https://sekaiapi.azaken.com/api/users";
 
 const Dashboard = () => {
   const [activeMode, setActiveMode] = useState<"assignments" | "users">(
